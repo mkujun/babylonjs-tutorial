@@ -1,0 +1,67 @@
+<html>
+  <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+      <title>Babylon Import .stl</title>
+
+      <script src="https://preview.babylonjs.com/babylon.js"></script>
+      <script src="https://preview.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+      <script src="https://code.jquery.com/pep/0.4.3/pep.js"></script>
+
+      <style>
+        html, body {
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        #renderCanvas {
+            width: 100%;
+            height: 100%;
+            touch-action: none;
+        }
+      </style>
+  </head>
+  <body>
+    <canvas id="renderCanvas" touch-action="none"></canvas>
+    <script>
+      var canvas = document.getElementById("renderCanvas");
+      var engine = new BABYLON.Engine(canvas, true);
+
+      var createScene = function() {
+        var scene = new BABYLON.Scene(engine);
+
+        // Add lights to the scene
+        var light1 = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(1, 1, 0), scene);
+
+        var camera = new BABYLON.ArcRotateCamera("Camera", Math.PI / 2, Math.PI / 2, 2, new BABYLON.Vector3(0,0,5), scene);
+        camera.attachControl(canvas, false);
+
+        BABYLON.SceneLoader.Load("/example_files/", "dragon.stl", engine, function (newScene) {
+          new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), newScene);
+           newScene.activeCamera = camera;
+
+           engine.runRenderLoop(function () {
+               newScene.render();
+           });
+        });
+
+        return scene;
+      }
+
+      var scene = createScene(); //Call the createScene function
+
+      // Register a render loop to repeatedly render the scene
+      engine.runRenderLoop(function () { 
+              scene.render();
+      });
+
+      // Watch for browser/canvas resize events
+      window.addEventListener("resize", function () { 
+              engine.resize();
+      });
+
+    </script>
+  </body>
+</html>
